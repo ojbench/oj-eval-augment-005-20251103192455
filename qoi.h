@@ -94,6 +94,8 @@ bool QoiEncode(uint32_t width, uint32_t height, uint8_t channels, uint8_t colors
                 // QOI_OP_INDEX
                 QoiWriteU8(static_cast<uint8_t>(QOI_OP_INDEX_TAG | idx));
             } else {
+                // Update index history for the current pixel before emitting non-INDEX op (matches reference encoder behavior)
+                history[idx][0] = r; history[idx][1] = g; history[idx][2] = b; history[idx][3] = a;
                 if (a == pre_a) {
                     int dr = static_cast<int>(r) - static_cast<int>(pre_r);
                     int dg = static_cast<int>(g) - static_cast<int>(pre_g);
@@ -129,9 +131,6 @@ bool QoiEncode(uint32_t width, uint32_t height, uint8_t channels, uint8_t colors
                     QoiWriteU8(a);
                 }
             }
-            // store current pixel in index history for future lookups
-            int idx2 = QoiColorHash(r, g, b, a);
-            history[idx2][0] = r; history[idx2][1] = g; history[idx2][2] = b; history[idx2][3] = a;
         }
 
         pre_r = r;

@@ -1,0 +1,7 @@
+conv
+temp.*
+/tmp/*
+*.ppm
+*.pam
+*.qoi
+
